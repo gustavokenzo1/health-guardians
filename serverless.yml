@@ -1,0 +1,73 @@
+service: healthguardians
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+  - serverless-dotenv-plugin
+  - serverless-dynamodb-local
+
+useDotenv: true
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+  dynamodb:
+    stages:
+      - dev
+      - local
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+
+provider:
+  name: aws
+  region: sa-east-1
+  runtime: nodejs16.x
+
+functions:
+  createUser:
+    handler: src/functions/createUser.handle
+    events:
+      - http:
+          path: /createUser
+          method: POST
+          cors: true
+  getUsers:
+    handler: src/functions/getUsers.handle
+    events:
+      - http:
+          path: /getUsers
+          method: GET
+          cors: true
+  deleteUser:
+    handler: src/functions/deleteUser.handle
+    events:
+      - http:
+          path: /deleteUser
+          method: DELETE
+          cors: true
+  markSurvey:
+    handler: src/functions/markSurvey.handle
+    events:
+      - http:
+          path: /markSurvey
+          method: GET
+          cors: true
+
+resources:
+  Resources:
+    dbUsers:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: users
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
