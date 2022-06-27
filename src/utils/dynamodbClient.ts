@@ -6,9 +6,11 @@ const options = {
 };
 
 const isOffline = () => {
-  return process.env.IS_OFFLINE;
+  return process.env.IS_OFFLINE === "true";
 };
 
 export const document = isOffline()
   ? new DynamoDB.DocumentClient(options)
-  : new DynamoDB.DocumentClient();
+  : new DynamoDB.DocumentClient({
+    region: "sa-east-1",
+  });

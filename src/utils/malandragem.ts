@@ -18,6 +18,7 @@ export const malandragem = async () => {
       Math.random() *
         (LUZIANIA_COORDS.latitude - AGUAS_LINDAS_COORDS.latitude) +
       AGUAS_LINDAS_COORDS.latitude;
+
     const randomLongitude =
       Math.random() *
         (LUZIANIA_COORDS.longitude - AGUAS_LINDAS_COORDS.longitude) +

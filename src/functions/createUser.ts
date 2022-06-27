@@ -1,6 +1,7 @@
 import { document } from "../utils/dynamodbClient";
 import { v4 as uuidv4 } from "uuid";
 import { loginUser } from "src/utils/loginUser";
+import { authorize } from "src/middleware/auth";
 
 interface ICreateUser {
   email: string;
@@ -8,6 +9,15 @@ interface ICreateUser {
 }
 
 export const handle = async (event) => {
+  const isAuthorized = await authorize(event)
+
+  if (!isAuthorized) {
+    return {
+      statusCode: 401,
+      body: JSON.stringify({ message: "Unauthorized" }),
+    };
+  }
+
   const { email, password } = JSON.parse(event.body) as ICreateUser;
   const users = await document.scan({ TableName: "users" }).promise();
 

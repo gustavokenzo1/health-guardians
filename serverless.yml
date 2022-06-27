@@ -1,3 +1,5 @@
+org: continuinglynx
+console: true
 service: healthguardians
 
 plugins:
@@ -25,6 +27,21 @@ provider:
   name: aws
   region: sa-east-1
   runtime: nodejs16.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: "dynamodb:*"
+          Resource: "*"
+        - Effect: Allow
+          Action:
+            - "dynamodb:Query"
+            - "dynamodb:Scan"
+            - "dynamodb:GetItem"
+            - "dynamodb:PutItem"
+            - "dynamodb:UpdateItem"
+            - "dynamodb:DeleteItem"
+          Resource: "*"
 
 functions:
   createUser:
@@ -55,6 +72,8 @@ functions:
           path: /markSurvey
           method: GET
           cors: true
+      - eventBridge:
+          schedule: cron(0 8 * * ? *)
 
 resources:
   Resources:

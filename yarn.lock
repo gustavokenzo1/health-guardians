@@ -4337,6 +4337,11 @@ serverless-esbuild@^1.23.3:
     semver "^7.3.5"
     string.prototype.matchall "^4.0.4"
 
+serverless-middleware@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/serverless-middleware/-/serverless-middleware-3.0.0.tgz#94e33cedc39dbeec4e1dd93b377de373350d4986"
+  integrity sha512-mi/sULMFDMeaQib1tY08klCrCvBJdrNxQUJxwm3zwxbwZbuZpuZJ0BMRLP6tIduw4z/O1V5qYwIca5oms/dPCw==
+
 serverless-offline@^8.8.0:
   version "8.8.0"
   resolved "https://registry.yarnpkg.com/serverless-offline/-/serverless-offline-8.8.0.tgz#ad12e7a9f86366584ea8f855412bebf25546fcc6"
