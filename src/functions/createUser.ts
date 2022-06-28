@@ -9,7 +9,7 @@ interface ICreateUser {
 }
 
 export const handle = async (event) => {
-  const isAuthorized = await authorize(event)
+  const isAuthorized = await authorize(event);
 
   if (!isAuthorized) {
     return {
@@ -37,7 +37,7 @@ export const handle = async (event) => {
           id: uuid,
           user_id,
           JWT,
-          email
+          email,
         },
       })
       .promise();
@@ -52,6 +52,21 @@ export const handle = async (event) => {
       },
     };
   } else {
+    const gds_user = await loginUser(email, password);
+
+    await document
+      .update({
+        TableName: "users",
+        Key: {
+          id: userExists.id,
+        },
+        UpdateExpression: "set JWT = :JWT",
+        ExpressionAttributeValues: {
+          ":JWT": gds_user.headers.authorization.split(" ")[1],
+        },
+      })
+      .promise();
+
     return {
       statusCode: 400,
       body: JSON.stringify({

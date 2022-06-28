@@ -22,6 +22,8 @@ custom:
       port: 8000
       inMemory: true
       migrate: true
+  serverless-offline:
+    httpPort: 3001
 
 provider:
   name: aws
@@ -73,7 +75,7 @@ functions:
           method: GET
           cors: true
       - eventBridge:
-          schedule: cron(0 8 * * ? *)
+          schedule: cron(0 11 * * ? *)
 
 resources:
   Resources:

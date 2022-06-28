@@ -41,12 +41,11 @@ export const malandragem = async () => {
 
     await sendEmail(user.email);
 
-    if (response.status === 208) {
-      console.log(`${user.id} já respondeu`);
-    } else {
-      if (response.data.user.id === null) {
-        // Revalidar o JWT
-      }
-    }
+    // if (response.status === 208) {
+    //   console.log(`${user.id} já respondeu`);
+    // } else {
+    //   if (response.data.user.id === null) {
+    //   }
+    // }
   });
 };
