@@ -2,7 +2,7 @@ import { authorize } from "src/middleware/auth";
 import { malandragem } from "src/utils/malandragem";
 
 export const handle = async (event) => {
-  const isAuthorized = await authorize(event)
+  const isAuthorized = await authorize(event);
 
   if (!isAuthorized) {
     return {

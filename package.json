@@ -11,6 +11,7 @@
     "@middy/core": "^2.5.3",
     "@middy/http-json-body-parser": "^2.5.3",
     "axios": "^0.27.2",
+    "nodemailer": "^6.7.5",
     "uuid": "^8.3.2",
     "webpack": "^5.73.0"
   },

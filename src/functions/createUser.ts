@@ -37,6 +37,7 @@ export const handle = async (event) => {
           id: uuid,
           user_id,
           JWT,
+          email
         },
       })
       .promise();

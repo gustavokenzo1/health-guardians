@@ -1,3 +1,4 @@
+import { sendEmail } from "src/adapters/node-mailer-adapter";
 import api from "src/services/api";
 import { document } from "./dynamodbClient";
 
@@ -37,6 +38,8 @@ export const malandragem = async () => {
       },
       { headers: { Authorization: `Bearer ${user.JWT}` } }
     );
+
+    await sendEmail(user.email);
 
     if (response.status === 208) {
       console.log(`${user.id} já respondeu`);
