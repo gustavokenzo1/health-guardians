@@ -2,7 +2,7 @@
 
 ## Sobre
 
-Quem sabe, sabe hehehe (feito para fins educacionais)
+Quem sabe, sabe hehehe (feito para fins educacionais, utilizado apenas após o período valendo créditos)
 
 ## Como funciona
 
