@@ -2,6 +2,7 @@ import { document } from "../utils/dynamodbClient";
 import { v4 as uuidv4 } from "uuid";
 import { loginUser } from "src/utils/loginUser";
 import { authorize } from "src/middleware/auth";
+import CryptoJS from 'crypto-js';
 
 interface ICreateUser {
   email: string;
@@ -19,16 +20,21 @@ export const handle = async (event) => {
   }
 
   const { email, password } = JSON.parse(event.body) as ICreateUser;
+
   const users = await document.scan({ TableName: "users" }).promise();
+
+  const encryptedPassword = CryptoJS.AES.encrypt(
+    password,
+    process.env.SECRET_KEY
+  ).toString();
 
   const userExists = users.Items.find((user) => user.email === email);
 
   if (!userExists) {
     const uuid = uuidv4();
-    const gds_user = await loginUser(email, password);
+    const gds_user = await loginUser(email, encryptedPassword);
 
     const user_id = gds_user.data.user.id;
-    const JWT = gds_user.headers.authorization.split(" ")[1];
 
     await document
       .put({
@@ -36,8 +42,8 @@ export const handle = async (event) => {
         Item: {
           id: uuid,
           user_id,
-          JWT,
           email,
+          password: encryptedPassword,
         },
       })
       .promise();
@@ -49,24 +55,10 @@ export const handle = async (event) => {
       }),
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     };
   } else {
-    const gds_user = await loginUser(email, password);
-
-    await document
-      .update({
-        TableName: "users",
-        Key: {
-          id: userExists.id,
-        },
-        UpdateExpression: "set JWT = :JWT",
-        ExpressionAttributeValues: {
-          ":JWT": gds_user.headers.authorization.split(" ")[1],
-        },
-      })
-      .promise();
-
     return {
       statusCode: 400,
       body: JSON.stringify({
@@ -74,6 +66,7 @@ export const handle = async (event) => {
       }),
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       },
     };
   }

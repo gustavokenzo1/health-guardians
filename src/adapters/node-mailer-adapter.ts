@@ -13,12 +13,26 @@ const transport = nodemailer.createTransport({
   },
 });
 
-export const sendEmail = async (email: string) => {
+export const sendSuccessEmail = async (email: string) => {
   const mailOptions = {
     from: "Equipe Guardiões da Insalubridade",
     to: email,
     subject: "🔥🔥🔥 GUARDIÕES DA SAÚDE 🔥🔥🔥",
     html: `<h1>GUARDIÕES DA SAÚDE MARCADO COM SUCESSO 🔥🔥🔥</h1>`,
+  };
+
+  await transport.sendMail(mailOptions);
+};
+
+export const sendErrorEmail = async (email: string, error: string) => {
+  const mailOptions = {
+    from: "Equipe Guardiões da Insalubridade",
+    to: email,
+    subject: "😭😭😭 GUARDIÕES DA SAÚDE 😭😭😭",
+    html: `
+      <h1>OCORREU UM ERRO AO MARCAR O GUARDIÕES DA SAÚDE</h1>
+      <p>${error}</p>
+    `,
   };
 
   await transport.sendMail(mailOptions);

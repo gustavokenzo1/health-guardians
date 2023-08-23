@@ -12,7 +12,7 @@ export const handle = async (event) => {
   }
   const { id } = JSON.parse(event.body);
 
-  document
+  await document
     .delete({
       TableName: "users",
       Key: {

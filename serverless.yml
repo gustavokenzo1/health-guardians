@@ -1,6 +1,6 @@
-org: continuinglynx
-console: true
-service: healthguardians
+app: health-guardians-new
+org: gustavokenzo1
+service: health-guardians-new
 
 plugins:
   - serverless-offline
@@ -33,17 +33,17 @@ provider:
     role:
       statements:
         - Effect: Allow
-          Action: "dynamodb:*"
-          Resource: "*"
+          Action: 'dynamodb:*'
+          Resource: '*'
         - Effect: Allow
           Action:
-            - "dynamodb:Query"
-            - "dynamodb:Scan"
-            - "dynamodb:GetItem"
-            - "dynamodb:PutItem"
-            - "dynamodb:UpdateItem"
-            - "dynamodb:DeleteItem"
-          Resource: "*"
+            - 'dynamodb:Query'
+            - 'dynamodb:Scan'
+            - 'dynamodb:GetItem'
+            - 'dynamodb:PutItem'
+            - 'dynamodb:UpdateItem'
+            - 'dynamodb:DeleteItem'
+          Resource: '*'
 
 functions:
   createUser:
