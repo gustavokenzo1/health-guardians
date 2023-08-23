@@ -28,12 +28,14 @@ export const malandragem = async () => {
         (LUZIANIA_COORDS.longitude - AGUAS_LINDAS_COORDS.longitude) +
         AGUAS_LINDAS_COORDS.longitude;
 
+      const created_at = new Date().toISOString();
+
       const survey = {
         household_id: null,
         latitude: randomLatitude,
         longitude: randomLongitude,
         symptom: [],
-        created_at: new Date().toISOString(),
+        created_at
       }
 
       const newLogin = await loginUser(user.email, user.password);
@@ -54,7 +56,8 @@ export const malandragem = async () => {
       if (response.status != 201) {
         await sendErrorEmail(user.email, response.data.errors);
       } else {
-        await sendSuccessEmail(user.email);
+        if (new Date(created_at).getDay() === 1)
+          await sendSuccessEmail(user.email);
       }
     })
   )
