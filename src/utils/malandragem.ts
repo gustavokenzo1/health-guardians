@@ -1,16 +1,17 @@
-import { sendErrorEmail, sendSuccessEmail } from "src/adapters/node-mailer-adapter";
+import { sendErrorEmail, sendQuizAnswersEmail, sendQuizAnswersErrorEmail, sendSuccessEmail } from "src/adapters/node-mailer-adapter";
 import api from "src/services/api";
 import { document } from "./dynamodbClient";
 import { loginUser } from "./loginUser";
+import { getQuizAnswers } from "./getQuizAnswers";
 
-const AGUAS_LINDAS_COORDS = {
-  latitude: -15.713631,
-  longitude: -47.8984,
+const TAGUATINGA_NORTE_COORDS = {
+  latitude: -15.794298,
+  longitude: -48.056408
 };
 
-const LUZIANIA_COORDS = {
-  latitude: -16.232539,
-  longitude: -47.929961,
+const GAMA_LESTE_COORDS = {
+  latitude: -16.032905,
+  longitude: -48.053711,
 };
 
 export const malandragem = async () => {
@@ -20,13 +21,13 @@ export const malandragem = async () => {
     users.Items.map(async (user) => {
       const randomLatitude =
         Math.random() *
-        (LUZIANIA_COORDS.latitude - AGUAS_LINDAS_COORDS.latitude) +
-        AGUAS_LINDAS_COORDS.latitude;
+        (GAMA_LESTE_COORDS.latitude - TAGUATINGA_NORTE_COORDS.latitude) +
+        TAGUATINGA_NORTE_COORDS.latitude;
 
       const randomLongitude =
         Math.random() *
-        (LUZIANIA_COORDS.longitude - AGUAS_LINDAS_COORDS.longitude) +
-        AGUAS_LINDAS_COORDS.longitude;
+        (GAMA_LESTE_COORDS.longitude - TAGUATINGA_NORTE_COORDS.longitude) +
+        TAGUATINGA_NORTE_COORDS.longitude;
 
       const created_at = new Date().toISOString();
 
@@ -54,10 +55,19 @@ export const malandragem = async () => {
       );
 
       if (response.status != 201) {
-        await sendErrorEmail(user.email, response.data.errors);
+        if (response.data.errors != "The user already contributed with this survey today")
+          await sendErrorEmail(user.email, response.data.errors);
       } else {
-        if (new Date(created_at).getDay() === 1)
+        if (new Date(created_at).getDay() === 1) {
           await sendSuccessEmail(user.email);
+        } else if (new Date(created_at).getDay() === 2) {
+          try {
+            const answers = await getQuizAnswers(JWT, user.id);
+            await sendQuizAnswersEmail(user.email, answers);
+          } catch (error) {
+            await sendQuizAnswersErrorEmail(user.email, error);
+          }
+        }
       }
     })
   )

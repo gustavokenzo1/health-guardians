@@ -37,3 +37,31 @@ export const sendErrorEmail = async (email: string, error: string) => {
 
   await transport.sendMail(mailOptions);
 };
+
+export const sendQuizAnswersEmail = async (email: string, answers: any) => {
+  const mailOptions = {
+    from: "Equipe Guardiões da Insalubridade",
+    to: email,
+    subject: "🔥🔥🔥 QUIZ DO GUARDIÕES DA SAÚDE MARCADO COM SUCESSO 🔥🔥🔥",
+    html: `
+      <h1>RESPOSTAS DO QUIZ</h1>
+      <p>${JSON.stringify(answers)}</p>
+    `,
+  };
+
+  await transport.sendMail(mailOptions);
+}
+
+export const sendQuizAnswersErrorEmail = async (email: string, error: string) => {
+  const mailOptions = {
+    from: "Equipe Guardiões da Insalubridade",
+    to: email,
+    subject: "😭😭😭 QUIZ DO GUARDIÕES DA SAÚDE 😭😭😭",
+    html: `
+      <h1>OCORREU UM ERRO AO MARCAR O QUIZ DO GUARDIÕES DA SAÚDE</h1>
+      <p>${error}</p>
+    `,
+  };
+
+  await transport.sendMail(mailOptions);
+}
