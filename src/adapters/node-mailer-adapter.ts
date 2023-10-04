@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { IUserEmail } from "src/utils/malandragem";
 
 const transport = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -13,10 +14,10 @@ const transport = nodemailer.createTransport({
   },
 });
 
-export const sendSuccessEmail = async (email: string) => {
+export const sendSuccessEmail = async (emails: IUserEmail[]) => {
   const mailOptions = {
     from: "Equipe Guardiões da Insalubridade",
-    to: email,
+    to: emails.map((email) => email.email),
     subject: "🔥🔥🔥 GUARDIÕES DA SAÚDE 🔥🔥🔥",
     html: `<h1>GUARDIÕES DA SAÚDE MARCADO COM SUCESSO 🔥🔥🔥</h1>`,
   };
@@ -24,42 +25,42 @@ export const sendSuccessEmail = async (email: string) => {
   await transport.sendMail(mailOptions);
 };
 
-export const sendErrorEmail = async (email: string, error: string) => {
+export const sendErrorEmail = async (emails: IUserEmail[]) => {
   const mailOptions = {
     from: "Equipe Guardiões da Insalubridade",
-    to: email,
+    to: emails.map((email) => email.email),
     subject: "😭😭😭 GUARDIÕES DA SAÚDE 😭😭😭",
     html: `
       <h1>OCORREU UM ERRO AO MARCAR O GUARDIÕES DA SAÚDE</h1>
-      <p>${error}</p>
+      <p>${emails[0].subject}</p>
     `,
   };
 
   await transport.sendMail(mailOptions);
 };
 
-export const sendQuizAnswersEmail = async (email: string, answers: any) => {
+export const sendQuizAnswersEmail = async (emails: IUserEmail[]) => {
   const mailOptions = {
     from: "Equipe Guardiões da Insalubridade",
-    to: email,
+    to: emails.map((email) => email.email),
     subject: "🔥🔥🔥 QUIZ DO GUARDIÕES DA SAÚDE MARCADO COM SUCESSO 🔥🔥🔥",
     html: `
       <h1>RESPOSTAS DO QUIZ</h1>
-      <p>${JSON.stringify(answers)}</p>
+      <p>${JSON.stringify(emails[0].subject)}</p>
     `,
   };
 
   await transport.sendMail(mailOptions);
 }
 
-export const sendQuizAnswersErrorEmail = async (email: string, error: string) => {
+export const sendQuizAnswersErrorEmail = async (emails: IUserEmail[]) => {
   const mailOptions = {
     from: "Equipe Guardiões da Insalubridade",
-    to: email,
+    to: emails.map((email) => email.email),
     subject: "😭😭😭 QUIZ DO GUARDIÕES DA SAÚDE 😭😭😭",
     html: `
       <h1>OCORREU UM ERRO AO MARCAR O QUIZ DO GUARDIÕES DA SAÚDE</h1>
-      <p>${error}</p>
+      <p>${emails[0].subject}</p>
     `,
   };
 

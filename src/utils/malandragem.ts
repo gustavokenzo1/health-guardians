@@ -4,6 +4,11 @@ import { document } from "./dynamodbClient";
 import { loginUser } from "./loginUser";
 import { getQuizAnswers } from "./getQuizAnswers";
 
+export interface IUserEmail {
+  email: string;
+  subject: string;
+}
+
 const TAGUATINGA_NORTE_COORDS = {
   latitude: -15.794298,
   longitude: -48.056408
@@ -16,6 +21,11 @@ const GAMA_LESTE_COORDS = {
 
 export const malandragem = async () => {
   const users = await document.scan({ TableName: "users" }).promise();
+
+  const successfulEmails: IUserEmail[] = [];
+  const failedEmails: IUserEmail[] = [];
+  const quizAnswersEmails: IUserEmail[] = [];
+  const quizAnswersErrorEmails: IUserEmail[] = [];
 
   await Promise.all(
     users.Items.map(async (user) => {
@@ -56,19 +66,47 @@ export const malandragem = async () => {
 
       if (response.status != 201) {
         if (response.data.errors != "The user already contributed with this survey today")
-          await sendErrorEmail(user.email, response.data.errors);
+          failedEmails.push({
+            email: user.email,
+            subject: response.data.errors
+          });
       } else {
         if (new Date(created_at).getDay() === 1) {
-          await sendSuccessEmail(user.email);
+          successfulEmails.push({
+            email: user.email,
+            subject: "success"
+          });
         } else if (new Date(created_at).getDay() === 2) {
           try {
             const answers = await getQuizAnswers(JWT, user.id);
-            await sendQuizAnswersEmail(user.email, answers);
+            quizAnswersEmails.push({
+              email: user.email,
+              subject: JSON.stringify(answers)
+            });
           } catch (error) {
-            await sendQuizAnswersErrorEmail(user.email, error);
+            quizAnswersErrorEmails.push({
+              email: user.email,
+              subject: error
+            });
           }
         }
       }
     })
   )
+
+  if (failedEmails.length > 0) {
+    await sendErrorEmail(failedEmails);
+  }
+
+  if (successfulEmails.length > 0) {
+    await sendSuccessEmail(successfulEmails);
+  }
+
+  if (quizAnswersEmails.length > 0) {
+    await sendQuizAnswersEmail(quizAnswersEmails);
+  }
+
+  if (quizAnswersErrorEmails.length > 0) {
+    await sendQuizAnswersErrorEmail(quizAnswersErrorEmails);
+  }
 };
