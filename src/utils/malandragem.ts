@@ -76,19 +76,22 @@ export const malandragem = async () => {
             email: user.email,
             subject: "success"
           });
-        } else if (new Date(created_at).getDay() === 2) {
-          try {
-            const answers = await getQuizAnswers(JWT, user.id);
-            quizAnswersEmails.push({
-              email: user.email,
-              subject: JSON.stringify(answers)
-            });
-          } catch (error) {
-            quizAnswersErrorEmails.push({
-              email: user.email,
-              subject: error
-            });
-          }
+        }
+      }
+
+      if (new Date(created_at).getDay() === 2) {
+        try {
+          const answers = await getQuizAnswers(JWT, user.id);
+
+          quizAnswersEmails.push({
+            email: user.email,
+            subject: JSON.stringify(answers)
+          });
+        } catch (error) {
+          quizAnswersErrorEmails.push({
+            email: user.email,
+            subject: error
+          });
         }
       }
     })

@@ -41,12 +41,14 @@ export const sendErrorEmail = async (emails: IUserEmail[]) => {
 
 export const sendQuizAnswersEmail = async (emails: IUserEmail[]) => {
   const mailOptions = {
-    from: "Equipe Guardiões da Insalubridade",
+    from: `Equipe Guardiões da Insalubridade <${process.env.EMAIL_USER}>`,
     to: emails.map((email) => email.email),
     subject: "🔥🔥🔥 QUIZ DO GUARDIÕES DA SAÚDE MARCADO COM SUCESSO 🔥🔥🔥",
     html: `
       <h1>RESPOSTAS DO QUIZ</h1>
-      <p>${JSON.stringify(emails[0].subject)}</p>
+      <ul>
+      ${JSON.parse(emails[0].subject).map((answer, index: number) => { return `<li>Questão ${index + 1}: ${answer.value}</li>` }).join("")}
+      </ul>
     `,
   };
 
